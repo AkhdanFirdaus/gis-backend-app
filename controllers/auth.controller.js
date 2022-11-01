@@ -1,5 +1,4 @@
 const userModel = require('../models/users.model')
-const profileModel = require('../models/profile.model')
 const forgotPasswordModel = require('../models/forgotPassword.model')
 
 const argon = require('argon2')
@@ -44,9 +43,6 @@ exports.register = async (req, res) => {
     }
     req.body.password = await argon.hash(req.body.password)
     const user = await userModel.insertUser(req.body)
-    if (!user.rows[0]) {
-      await profileModel.insertProfile(req.body)
-    }
     const createdUser = user.rows[0]
     return res.json({
       success: true,
