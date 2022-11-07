@@ -3,8 +3,8 @@ const db = require('../helpers/db')
 const table = 'users'
 
 exports.insertUser = (data)  => {
-  const sql = `INSERT INTO "${table}" ("email", "password") VALUES ($1, $2) RETURNING *`
-  const params = [data.email, data.password]
+  const sql = `INSERT INTO "${table}" ("photo", "name", "email", "password", "phone", "role") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`
+  const params = [data.photo, data.name, data.email, data.password, data.phone, data.role]
   return db.query(sql, params)
 }
 
@@ -20,20 +20,20 @@ exports.selectAll = (data) => {
 }
 
 exports.selectUserById = (id) => {
-  const sql = `SELECT * FROM "${table}" WHERE id = $1`
+  const sql = `SELECT * FROM "${table}" WHERE id=$1`
   const params = [id]
   return db.query(sql, params)
 }
 
 exports.selectUserByEmail = (email) => {
-  const sql = `SELECT * FROM "${table}" WHERE email = $1`
+  const sql = `SELECT * FROM "${table}" WHERE email=$1`
   const params = [email]
   return db.query(sql, params)
 }
 
 exports.updateUserById = (id, data) => {
-  const sql = `UPDATE "${table}" SET email=$2, password=$3 WHERE id = $1 RETURNING *`
-  const params = [id, data.email, data.password]
+  const sql = `UPDATE "${table}" SET email=$2, password=$3, photo=$4, name=$5, phone=$6, role=$7 WHERE id=$1 RETURNING *`
+  const params = [id, data.email, data.password, data.photo, data.name, data.phone, data.role]
   return db.query(sql, params)
 }
 
