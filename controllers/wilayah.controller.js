@@ -1,0 +1,45 @@
+const wilayahModel = require('../models/wilayah.models')
+
+exports.readAllWilayah = async (req, res)  => {
+  try {
+    const listWilayah = await wilayahModel.getListWilayah(req.query)
+    
+    const pageInfo = {
+      page: req.query.page,
+      limit: req.query.limit,
+      totalPage: Math.ceil(listWilayah.rowCount / req.query.limit)
+    }
+
+    return res.json({
+      success: true,
+      message: 'List all wilayah',
+      pageInfo,
+      result: listWilayah.rows
+    })
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error : ' + err.message
+    })
+  }
+}
+
+exports.readWilayah = async (req, res) => {
+  console.log('keisnii kudunya')
+  try {
+    const wilayah = await wilayahModel.getWilayah(req.params.id)
+    if (!wilayah.rows[0]) {
+      throw new Error('Wilayah not found')
+    }
+    return res.json({
+      success: true,
+      message: 'Wilayah successfully retreived',
+      results: wilayah.rows[0]
+    })
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error : ' + err.message
+    })
+  }
+}
