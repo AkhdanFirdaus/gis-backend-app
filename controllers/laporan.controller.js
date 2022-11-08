@@ -1,7 +1,15 @@
 const laporanModel = require('../models/laporan.model')
+const userModel = require('../models/users.model')
 
 exports.createLaporan = async (req, res) => {
   try {
+    const findUser = await userModel.selectUserByEmail(req.body.email)
+    if (!findUser.rows[0]) {
+      const user = await userModel.insertUser(req.body)
+      req.body.pelapor_id = user.rows[0].uid
+    } else {
+      req.body.pelapor_id = findUser.rows[0].uid
+    }
     const insert = await laporanModel.createLaporan(req.body)
     const laporan = insert.rows[0]
     return res.json({
@@ -20,7 +28,7 @@ exports.createLaporan = async (req, res) => {
 exports.readAllLaporan = async (req, res) => {
   try {
     const listLaporan = await laporanModel.getLaporan(req.query)
-    const pageInfo ={
+    const pageInfo = {
       page: req.query.page,
       limit: req.query.limit,
       totalPage: Math.ceil(listLaporan.rowCount / req.query.limit)
