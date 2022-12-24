@@ -7,7 +7,7 @@ exports.createWilayah = async (req, res) => {
     return res.json({
       success: true,
       message: 'Create wilayah successfully',
-      results: wilayah
+      result: wilayah
     })
   } catch (err) {
     return res.status(500).json({
@@ -31,7 +31,7 @@ exports.readAllWilayah = async (req, res)  => {
       success: true,
       message: 'List all wilayah',
       pageInfo,
-      result: listWilayah.rows
+      results: listWilayah.rows
     })
   } catch (err) {
     return res.status(500).json({
@@ -50,7 +50,7 @@ exports.readWilayah = async (req, res) => {
     return res.json({
       success: true,
       message: 'Wilayah successfully retreived',
-      results: wilayah.rows[0]
+      result: wilayah.rows[0]
     })
   } catch (err) {
     return res.status(500).json({
@@ -66,12 +66,29 @@ exports.deleteWilayah = async (req, res) => {
     return res.json({
       success: true,
       message: 'Delete wilayah successfully',
-      results: wilayah.rows[0]
+      result: wilayah.rows[0]
     })
   } catch (err) {
     return res.status(500).json({
       success: false,
       message: 'Error : ' + err.message
+    })
+  }
+}
+
+exports.getCountWilayah = async (req, res) => {
+  try {
+    const count = await wilayahModel.getListWilayah().rows.length
+    return res.json({
+      success: true,
+      message: 'Get count wilayah successfully',
+      result: count
+    })
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error : ' + err.message,
+      result: 0
     })
   }
 }
