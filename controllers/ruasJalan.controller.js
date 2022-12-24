@@ -19,6 +19,15 @@ exports.createRuasJalan = async (req, res) => {
 
 exports.readAllruasJalan = async (req, res)  => {
   try {
+    if (req.query['type']) {
+      const geojsonRuasJalan = await ruasJalanModel.getGeoJSONRuasJalan()
+      return res.json({
+        success: true,
+        message: 'geojson ruas jalan',
+        results: geojsonRuasJalan.rows[0].jsonb_build_object
+      })
+    }
+
     const listRuasJalan = await ruasJalanModel.getListRuasJalan(req.query)
     
     const pageInfo = {
@@ -78,11 +87,11 @@ exports.deleteRuasJalan = async (req, res) => {
 
 exports.getCountruasJalan = async (req, res) => {
   try {
-    const count = await ruasJalanModel.getListRuasJalan().rows.length
+    const ruasJalan = await ruasJalanModel.getListRuasJalan(req.query)
     return res.json({
       success: true,
       message: 'Get count ruasJalan successfully',
-      result: count
+      result: ruasJalan.rows.length
     })
   } catch (err) {
     return res.status(500).json({

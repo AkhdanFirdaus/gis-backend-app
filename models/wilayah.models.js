@@ -13,6 +13,23 @@ exports.getListWilayah = (data) => {
   return db.query(sql)
 }
 
+exports.getGeoJSONWilayah = () => {
+  const sql = `
+    SELECT JSONB_BUILD_OBJECT(
+      'type', 'FeatureCollection',
+      'features', JSON_AGG(features.feature)
+    ) 
+    FROM (
+      SELECT row_to_json(inputs) As feature 
+        FROM (SELECT 'Feature' As type 
+        , ST_AsGeoJSON(l.geom)::json As geometry 
+        , row_to_json((SELECT l FROM (SELECT id, nama, deskripsi) As l)) As properties 
+        FROM public.wilayah as l) As inputs
+    ) features
+  `
+  return db.query(sql)
+}
+
 exports.getWilayah = (id) => {
   const sql = `SELECT * FROM ${table} WHERE id=$1`
   const params = [id]

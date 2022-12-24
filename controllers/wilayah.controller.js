@@ -19,6 +19,15 @@ exports.createWilayah = async (req, res) => {
 
 exports.readAllWilayah = async (req, res)  => {
   try {
+    if (req.query['type']) {
+      const geojsonWilayah = await wilayahModel.getGeoJSONWilayah()
+      return res.json({
+        success: true,
+        message: 'geojson wilayah',
+        results: geojsonWilayah.rows[0].jsonb_build_object
+      })
+    }
+
     const listWilayah = await wilayahModel.getListWilayah(req.query)
     
     const pageInfo = {
@@ -78,11 +87,11 @@ exports.deleteWilayah = async (req, res) => {
 
 exports.getCountWilayah = async (req, res) => {
   try {
-    const count = await wilayahModel.getListWilayah().rows.length
+    const wilayah = await wilayahModel.getListWilayah(req.query)
     return res.json({
       success: true,
       message: 'Get count wilayah successfully',
-      result: count
+      result: wilayah.rows.length
     })
   } catch (err) {
     return res.status(500).json({

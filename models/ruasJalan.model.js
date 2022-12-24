@@ -13,6 +13,23 @@ exports.getListRuasJalan = (data) => {
   return db.query(sql)
 }
 
+exports.getGeoJSONRuasJalan = () => {
+  const sql = `
+    SELECT JSONB_BUILD_OBJECT(
+      'type', 'FeatureCollection',
+      'features', JSON_AGG(features.feature)
+    ) 
+    FROM (
+      SELECT row_to_json(inputs) As feature 
+        FROM (SELECT 'Feature' As type 
+        , ST_AsGeoJSON(l.geom)::json As geometry 
+        , row_to_json((SELECT l FROM (SELECT id, nama, deskripsi, awal, akhir, ketinggian, panjang, lebarrata, luas) As l)) As properties 
+        FROM public.ruas_jalan as l) As inputs
+    ) features
+  `
+  return db.query(sql)
+}
+
 exports.getRuasJalan = (id) => {
   const sql = `SELECT id, ST_asGeoJSON(geom) as geom, nama, deskripsi, awal, akhir, ketinggian, panjang, lebarrata, luas FROM ${table} WHERE id=$1`
   const params = [id]
