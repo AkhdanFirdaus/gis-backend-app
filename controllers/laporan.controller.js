@@ -6,10 +6,13 @@ exports.createLaporan = async (req, res) => {
     const findUser = await userModel.selectUserByEmail(req.body.email)
     if (!findUser.rows[0]) {
       const user = await userModel.insertUser(req.body)
-      req.body.pelapor_id = user.rows[0].uid
+      console.log(user.rows[0])
+      req.body.pelapor_uid = user.rows[0].uid
     } else {
-      req.body.pelapor_id = findUser.rows[0].uid
+      console.log(findUser.rows[0])
+      req.body.pelapor_uid = findUser.rows[0].uid
     }
+    console.log(req.body)
     const insert = await laporanModel.createLaporan(req.body)
     const laporan = insert.rows[0]
     return res.json({
