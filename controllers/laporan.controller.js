@@ -84,3 +84,20 @@ exports.deleteLaporan = async (req, res) => {
     })
   }
 }
+
+exports.getCountLaporan = async (req, res) => {
+  try {
+    const laporan = await laporanModel.getLaporan(req.query)
+    return res.json({
+      success: true,
+      message: 'Get count laporan successfully',
+      result: laporan.rows.length
+    })
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error : ' + err.message,
+      result: 0
+    })
+  }
+}
