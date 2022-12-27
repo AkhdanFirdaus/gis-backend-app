@@ -30,6 +30,15 @@ exports.createLaporan = async (req, res) => {
 
 exports.readAllLaporan = async (req, res) => {
   try {
+    if (req.query['type']) {
+      const geojsonlaporan = await laporanModel.getGeoJSONLaporan()
+      return res.json({
+        success: true,
+        message: 'geojson laporan',
+        results: geojsonlaporan.rows[0].jsonb_build_object
+      })
+    }
+
     const listLaporan = await laporanModel.getLaporan(req.query)
     const pageInfo = {
       page: req.query.page,
