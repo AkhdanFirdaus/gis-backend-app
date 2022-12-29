@@ -28,6 +28,15 @@ exports.readAllruasJalan = async (req, res)  => {
       })
     }
 
+    if (req.query['wilayah_id']) {
+      const ruasJalanWilayah = await ruasJalanModel.getRuasJalanByWilayah(req.query.wilayah_id)
+      return res.json({
+        success: true,
+        message: `berhasil mendapatkan ruas jalan di wilayah ${req.query.wilayah_id}`,
+        results: ruasJalanWilayah.rows
+      })
+    }
+
     const listRuasJalan = await ruasJalanModel.getListRuasJalan(req.query)
     
     const pageInfo = {

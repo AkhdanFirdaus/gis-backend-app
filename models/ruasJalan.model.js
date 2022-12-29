@@ -13,6 +13,24 @@ exports.getListRuasJalan = (data) => {
   return db.query(sql)
 }
 
+exports.getRuasJalanByWilayah = (id) => {
+  const sql = `
+    select 
+    rj.id,
+    rj.nama as nama, 
+    rj.deskripsi as deskripsi, 
+    rj.jarak as jarak, 
+    w.nama as wilayah_nama, 
+    ST_AsGeoJSON(ST_Intersection(rj.geom, w.geom))
+    from ruas_jalan rj 
+    join wilayah w 
+    on ST_Intersects(rj.geom, w.geom)
+    where w.id = $1
+  `
+  const params = [id]
+  return db.query(sql, params)
+}
+
 exports.getGeoJSONRuasJalan = () => {
   const sql = `
     SELECT JSONB_BUILD_OBJECT(
@@ -41,5 +59,4 @@ exports.deleteRuasJalanById = (id) => {
   const params = [id]
   return db.query(sql, params)
 }
-
 
